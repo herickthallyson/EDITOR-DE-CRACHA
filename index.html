@@ -47,6 +47,22 @@ main{grid-template-columns:minmax(0,1.45fr) minmax(300px,1fr);max-width:1440px;a
 .panel>summary{font-size:15px;padding:4px;cursor:pointer}.panel>div.section:first-of-type{padding-top:16px;border-top:0}.panel:not([open]){padding:12px}.preview .output-buttons{margin-top:8px}
 @media(max-width:1099px){main{grid-template-columns:minmax(0,1fr);max-width:850px}.preview{grid-column:1;grid-row:1;position:relative;top:0;max-height:none;overflow:visible;border-radius:12px}.panel{grid-column:1;grid-row:2}.stage[data-layout]{max-height:none;overflow:auto}.direct-hint{font-size:12px}.preview .sub{display:none}}
 @media(max-width:480px){.stage[data-layout]{justify-content:safe center}.direct-editor{width:260px}.preview{padding:8px}.direct-hint{margin:5px 0}}
+@media(max-width:768px){
+  main{max-width:100%;padding:6px;gap:8px}
+  .panel,#advancedPanel{display:none!important}
+  #quickSettings{display:none!important}
+  .preview{padding:10px 8px;border-radius:14px}
+  .preview-title h2{font-size:16px}
+  .direct-hint{font-size:13px;line-height:1.45}
+  .layout-meta,.face-nav{display:none!important}
+  .stage,.stage[data-layout],.stage[data-layout=both],.stage[data-layout=duplex],.stage[data-layout=front],.stage[data-layout=back]{display:grid;grid-template-columns:1fr;gap:14px;padding:10px 6px 14px;justify-items:center;align-items:start;overflow:visible;max-height:none}
+  .badge-wrap{width:100%;display:flex;flex-direction:column;align-items:center}
+  .badge-wrap>span{font-size:13px;margin-bottom:8px}
+  .badge-wrap>div>svg{width:min(94vw, calc(var(--w) * 1.55));max-width:none;height:auto}
+  .output-buttons{grid-template-columns:1fr}
+  .hole-option{align-self:flex-start}
+  .print-options{padding:8px}
+}
 }
 /* V8.2 — gestos nativos, sem capturar o dedo na prévia. */
 @media screen {
@@ -259,9 +275,12 @@ $('directChoose').onclick=()=>$('photoFile').click();$('directRemove').onclick=(
 document.addEventListener('click',e=>{if(ignoreTouchClick&&e.detail!==0)return;if(editing&&!editor.contains(e.target)&&!e.target.closest('.direct-target'))closeDirect();});
 window.addEventListener('resize',positionDirect);window.addEventListener('scroll',positionDirect,true);if(window.visualViewport){window.visualViewport.addEventListener('resize',positionDirect);window.visualViewport.addEventListener('scroll',positionDirect);}
 for(const [a,b] of [['quickOpen','loadProject'],['quickSave','saveProject'],['quickNew','newProject']])$(a).onclick=()=>{closeDirect();$(b).click();};
-$('quickSettings').onclick=()=>{const p=$('advancedPanel');p.open=!p.open;if(p.open&&matchMedia('(max-width:1099px)').matches)p.scrollIntoView({block:'start',behavior:'smooth'});};
+$('quickSettings').onclick=()=>{if(matchMedia('(max-width:768px)').matches)return;const p=$('advancedPanel');p.open=!p.open;if(p.open&&matchMedia('(max-width:1099px)').matches)p.scrollIntoView({block:'start',behavior:'smooth'});};
 // Exibe o crachá inteiro sempre que houver espaço; a configuração do PDF não muda.
 $('advancedPanel').open=!matchMedia('(max-width:1099px)').matches;
+function syncMobileMode(){const mobile=matchMedia('(max-width:768px)').matches;const panel=$('advancedPanel');if(mobile&&panel)panel.open=false;}
+window.addEventListener('resize',syncMobileMode,{passive:true});
+syncMobileMode();
 build();buildFonts();sync();$('status').textContent='Modelo público pronto para editar.';
 </script>
 </body></html>
